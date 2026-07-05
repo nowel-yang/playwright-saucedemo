@@ -1,19 +1,19 @@
-import { test, expect } from "@playwright/test";
-import { LoginPage } from "../pages/LoginPage";
+import { test, expect } from "../fixtures";
+import { PASSWORD, usernames } from "../test-data/users";
 
-test("navigate to saucedemo and create login page object", async ({ page }) => {
-  // load the page first
-  await page.goto("https://www.saucedemo.com/");
-  const successfulLogin = new LoginPage(page);
+test.describe("Login", () => {
+  test("logs in successfully with standard user", async ({ loginPage }) => {
+    await loginPage.login(usernames.standard_user, PASSWORD);
+    await expect(loginPage.page).toHaveURL(/inventory/);
+  });
 
-  await successfulLogin.login("standard_user", "secret_sauce");
-
-  await expect(page.locator(".inventory_container")).toBeVisible();
-});
-
-test.describe("todo tests", () => {
-  let todoPage;
-
-  test.beforeEach("", () => {});
-  test.afterEach("", () => {});
+  test("shows error when logging in with locked out user", async ({
+    loginPage,
+  }) => {
+    await loginPage.login(usernames.locked_out_user, PASSWORD);
+    await expect(loginPage.errorMessage).toContainText(
+      "Sorry, this user has been locked out"
+    );
+    await expect(loginPage.page).toHaveURL(/saucedemo\.com\/$/);
+  });
 });

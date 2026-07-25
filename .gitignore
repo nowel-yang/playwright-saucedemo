@@ -9,3 +9,6 @@ node_modules/
 
 # Scratch playground
 playground.ts
+
+# Personal notes (blog drafting raw material, not part of the test suite)
+/notes/

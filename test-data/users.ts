@@ -8,3 +8,4 @@ export const usernames = {
 } as const;
 
 export const PASSWORD = "secret_sauce";
+export const INVALID_PASSWORD = "invalid_password";

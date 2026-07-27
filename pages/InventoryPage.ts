@@ -3,12 +3,14 @@ import { Page, Locator } from "@playwright/test";
 export class InventoryPage {
   readonly page: Page;
   readonly inventoryList: Locator;
+  readonly inventoryItemImages: Locator;
   readonly cartLink: Locator;
   readonly sortDropdown: Locator;
 
   constructor(page: Page) {
     this.page = page;
     this.inventoryList = page.locator(".inventory_list");
+    this.inventoryItemImages = page.locator(".inventory_item_img");
     this.cartLink = page.locator(".shopping_cart_link");
     this.sortDropdown = page.locator('[data-test="product-sort-container"]');
   }
@@ -37,5 +39,14 @@ export class InventoryPage {
     return this.inventoryList
       .locator('[data-test="inventory-item-price"]')
       .allTextContents();
+  }
+
+  async getBrokenImages(): Promise<string[]> {
+    return await this.inventoryItemImages.evaluateAll((imgs) => {
+      const brokenImgs = imgs.filter((img) =>
+        img.getAttribute("src")?.includes("404")
+      );
+      return brokenImgs.map((img) => img.getAttribute("src") || "");
+    });
   }
 }

@@ -32,4 +32,14 @@ test.describe("Login", () => {
     await expect(loginPage.errorMessage).toContainText("Password is required");
     await expect(loginPage.page).toHaveURL(/saucedemo\.com\/$/);
   });
+
+  test("shows broken images with problem user", async ({
+    loginPage,
+    inventoryPage,
+  }) => {
+    await loginPage.login(usernames.problem_user, PASSWORD);
+    await expect(loginPage.page).toHaveURL(/inventory/);
+    const brokenImages = await inventoryPage.getBrokenImages();
+    expect(brokenImages.length).toBeGreaterThan(0);
+  });
 });

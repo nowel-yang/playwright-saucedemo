@@ -1,9 +1,11 @@
 import { Page, Locator } from "@playwright/test";
+import { BurgerMenu } from "./BurgerMenu";
 
 export type SortOption = "az" | "za" | "lohi" | "hilo";
 
 export class InventoryPage {
   readonly page: Page;
+  readonly burgerMenuButton: BurgerMenu;
   readonly cartLink: Locator;
   readonly cartBadge: Locator;
   readonly inventoryList: Locator;
@@ -15,6 +17,7 @@ export class InventoryPage {
 
   constructor(page: Page) {
     this.page = page;
+    this.burgerMenuButton = new BurgerMenu(page);
     this.cartLink = page.locator(".shopping_cart_link");
     this.cartBadge = page.locator(".shopping_cart_badge");
     this.inventoryList = page.locator(".inventory_list");

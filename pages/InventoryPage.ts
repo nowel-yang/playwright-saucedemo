@@ -1,5 +1,7 @@
 import { Page, Locator } from "@playwright/test";
 
+export type SortOption = "az" | "za" | "lohi" | "hilo";
+
 export class InventoryPage {
   readonly page: Page;
   readonly cartLink: Locator;
@@ -9,6 +11,7 @@ export class InventoryPage {
   readonly inventoryItemNames: Locator;
   readonly inventoryItem: Locator;
   readonly sortDropdown: Locator;
+  readonly activeOption: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -19,6 +22,7 @@ export class InventoryPage {
     this.inventoryItemImages = page.locator(".inventory_item_img");
     this.inventoryItemNames = page.locator(".inventory_item_name");
     this.sortDropdown = page.locator('[data-test="product-sort-container"]');
+    this.activeOption = page.locator('[data-test="active-option"]');
   }
 
   async getItemCount(): Promise<number> {
@@ -29,13 +33,20 @@ export class InventoryPage {
     await this.getInventoryItemByName(itemName).locator("button").click();
   }
 
-  async sortBy(option: "az" | "za" | "lohi" | "hilo") {
+  async sortBy(option: SortOption) {
     await this.sortDropdown.selectOption(option);
   }
 
-  async getItemPrices(): Promise<string[]> {
-    return this.inventoryList
+  async getItemPrices(): Promise<number[]> {
+    const priceStrings = await this.inventoryList
       .locator('[data-test="inventory-item-price"]')
+      .allTextContents();
+    return priceStrings.map((price) => parseFloat(price.replace("$", "")));
+  }
+
+  async getItemNames(): Promise<string[]> {
+    return this.inventoryList
+      .locator('[data-test="inventory-item-name"]')
       .allTextContents();
   }
 

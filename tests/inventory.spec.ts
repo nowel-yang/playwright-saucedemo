@@ -2,6 +2,11 @@ import { test, expect } from "../fixtures";
 import { InventoryPage, SortOption } from "../pages/InventoryPage";
 import { items } from "../test-data/items";
 
+/**
+ * One sort direction to verify: the dropdown option to select, the expected
+ * active-option label, how to read the sorted values back off the page, and
+ * how those values should be ordered once sorted correctly.
+ */
 type SortCase<T> = {
   option: SortOption;
   label: string;
@@ -9,6 +14,11 @@ type SortCase<T> = {
   sort: (a: T, b: T) => number;
 };
 
+/**
+ * Applies one sort direction and asserts the dropdown, active-option label,
+ * and resulting item order all reflect it. Wrapped in test.step so each
+ * direction shows up as its own step in the report/trace.
+ */
 async function runSortCase<T>(inventoryPage: InventoryPage, c: SortCase<T>) {
   await test.step(`sort by ${c.label}`, async () => {
     await inventoryPage.sortBy(c.option);
@@ -23,6 +33,7 @@ test.describe("Inventory", () => {
   test("sort products", async ({
     authenticatedInventoryPage: inventoryPage,
   }) => {
+    // Verify all four sort directions (price low-high/high-low, name A-Z/Z-A).
     await runSortCase(inventoryPage, {
       option: "lohi",
       label: "Price (low to high)",
@@ -63,15 +74,23 @@ test.describe("Inventory", () => {
   test("remove item from cart", async ({ authenticatedInventoryPage }) => {
     await authenticatedInventoryPage.setCartStorage([items.backpack.id]);
     await authenticatedInventoryPage.page.reload();
+    // Verify "Remove" button
     await expect(
       authenticatedInventoryPage
         .getInventoryItemByName(items.backpack.name)
         .locator("button")
     ).toHaveText("Remove");
+    // Click "Remove" button
     await authenticatedInventoryPage
       .getInventoryItemByName(items.backpack.name)
       .locator("button")
       .click();
+    // Verify "Add to cart" button
+    await expect(
+      authenticatedInventoryPage
+        .getInventoryItemByName(items.backpack.name)
+        .locator("button")
+    ).toHaveText("Add to cart");
     await expect(authenticatedInventoryPage.cartBadge).toHaveCount(0);
     await expect(await authenticatedInventoryPage.getCartStorage()).toEqual([]);
   });

@@ -8,56 +8,70 @@ test.describe("Burger Menu", () => {
       await expect(inventoryPage.burgerMenuButton.menuNavigation).toBeVisible();
     });
 
-    test("open and close the burger menu", async ({
-      authenticatedInventoryPage: inventoryPage,
-    }) => {
-      // Close the burger menu
-      await inventoryPage.burgerMenuButton.close();
-      await expect(inventoryPage.burgerMenuButton.menuNavigation).toBeHidden();
-    });
+    test(
+      "open and close the burger menu",
+      { tag: ["@MENU-001", "@MENU-002"] },
+      async ({ authenticatedInventoryPage: inventoryPage }) => {
+        // Close the burger menu
+        await inventoryPage.burgerMenuButton.close();
+        await expect(
+          inventoryPage.burgerMenuButton.menuNavigation
+        ).toBeHidden();
+      }
+    );
 
-    test("log out from the burger menu", async ({
-      authenticatedInventoryPage: inventoryPage,
-    }) => {
-      // Click the logout link
-      await inventoryPage.burgerMenuButton.logoutLink.click();
+    test(
+      "log out from the burger menu",
+      { tag: "@MENU-010" },
+      async ({ authenticatedInventoryPage: inventoryPage }) => {
+        // Click the logout link
+        await inventoryPage.burgerMenuButton.logoutLink.click();
 
-      // Verify that the user is redirected to the login page
-      await expect(inventoryPage.page).toHaveURL("https://www.saucedemo.com/");
-    });
+        // Verify that the user is redirected to the login page
+        await expect(inventoryPage.page).toHaveURL(
+          "https://www.saucedemo.com/"
+        );
+      }
+    );
 
-    test("dynamic catalog - lazy load", async ({
-      authenticatedInventoryPage: inventoryPage,
-    }) => {
-      await inventoryPage.burgerMenuButton.clickLazyLoad();
-      await expect(inventoryPage.page).toHaveURL(
-        "https://www.saucedemo.com/dynamic-catalog-lazy-load.html"
-      );
-    });
+    test(
+      "dynamic catalog - lazy load",
+      { tag: "@MENU-020" },
+      async ({ authenticatedInventoryPage: inventoryPage }) => {
+        await inventoryPage.burgerMenuButton.clickLazyLoad();
+        await expect(inventoryPage.page).toHaveURL(
+          "https://www.saucedemo.com/dynamic-catalog-lazy-load.html"
+        );
+      }
+    );
 
-    test("dynamic catalog - spinner", async ({
-      authenticatedInventoryPage: inventoryPage,
-    }) => {
-      await inventoryPage.burgerMenuButton.clickSpinner();
-      await expect(inventoryPage.page).toHaveURL(
-        "https://www.saucedemo.com/dynamic-catalog-spinner.html"
-      );
-    });
+    test(
+      "dynamic catalog - spinner",
+      { tag: "@MENU-021" },
+      async ({ authenticatedInventoryPage: inventoryPage }) => {
+        await inventoryPage.burgerMenuButton.clickSpinner();
+        await expect(inventoryPage.page).toHaveURL(
+          "https://www.saucedemo.com/dynamic-catalog-spinner.html"
+        );
+      }
+    );
   });
 
-  test("reset app state", async ({
-    authenticatedInventoryPage: inventoryPage,
-  }) => {
-    // Add an item to the cart
-    await inventoryPage.setCartStorage([1]);
-    await inventoryPage.page.reload();
-    await expect(inventoryPage.cartBadge).toHaveText("1");
+  test(
+    "reset app state",
+    { tag: "@MENU-011" },
+    async ({ authenticatedInventoryPage: inventoryPage }) => {
+      // Add an item to the cart
+      await inventoryPage.setCartStorage([1]);
+      await inventoryPage.page.reload();
+      await expect(inventoryPage.cartBadge).toHaveText("1");
 
-    // Click the reset app state link
-    await inventoryPage.burgerMenuButton.open();
-    await inventoryPage.burgerMenuButton.clickResetAppState();
+      // Click the reset app state link
+      await inventoryPage.burgerMenuButton.open();
+      await inventoryPage.burgerMenuButton.clickResetAppState();
 
-    // Verify that the cart is empty
-    await expect(inventoryPage.cartBadge).toBeHidden();
-  });
+      // Verify that the cart is empty
+      await expect(inventoryPage.cartBadge).toBeHidden();
+    }
+  );
 });

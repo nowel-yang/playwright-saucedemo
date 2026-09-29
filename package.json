@@ -9,7 +9,8 @@
     "test:ui": "playwright test --ui",
     "report": "playwright show-report",
     "playground": "tsx playground.ts",
-    "prepare": "husky"
+    "prepare": "husky",
+    "lint": "eslint ."
   },
   "repository": {
     "type": "git",
@@ -24,11 +25,15 @@
   },
   "homepage": "https://github.com/nowel-yang/playwright-saucedemo#readme",
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.61.1",
     "@types/node": "^26.1.0",
+    "eslint": "^10.11.0",
+    "eslint-plugin-playwright": "^2.12.0",
     "husky": "^9.1.7",
     "prettier": "^3.9.4",
     "tsx": "^4.23.0",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.71.0"
   }
 }

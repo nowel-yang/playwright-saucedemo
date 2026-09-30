@@ -114,8 +114,9 @@ test.describe("Inventory", () => {
     async ({ loginPage, inventoryPage }) => {
       await loginPage.login(usernames.problem_user, PASSWORD);
       await expect(loginPage.page).toHaveURL(/inventory/);
-      const brokenImages = await inventoryPage.getBrokenImages();
-      expect(brokenImages.length).toBeGreaterThan(0);
+      await expect
+        .poll(() => inventoryPage.getBrokenImages())
+        .not.toHaveLength(0);
     }
   );
 });

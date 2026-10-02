@@ -9,7 +9,7 @@ written with Playwright and TypeScript. They run in Chromium, Firefox and WebKit
 
 - **[Playwright Test](https://playwright.dev)** with **TypeScript**
 - **Page Object Model:** one class per page or component in `pages/`
-- **Custom fixtures** for logged-in pages (`fixtures/index.ts`)
+- **Custom fixtures** that provide page objects and a logged-in start (`fixtures/index.ts`)
 - **ESLint** with `eslint-plugin-playwright`
 - **Husky** pre-commit hook, and **GitHub Actions** for CI
 
@@ -46,6 +46,10 @@ the docs. (Chromium run shown; the suite also runs in Firefox and WebKit.)
   investigated.
 - **Isolated tests.** Each test gets a fresh browser context, and cart state is set
   up directly in `localStorage` so a test only fails for what it is testing.
+- **Page objects come from fixtures.** Every page object has a fixture in
+  `fixtures/index.ts`, so tests ask for `{ inventoryPage }` instead of calling
+  `new InventoryPage(page)`. Plain fixtures only create the object. Fixtures such
+  as `authenticatedInventoryPage` add setup on top, like logging in.
 
 ## Getting started
 

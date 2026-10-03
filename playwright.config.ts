@@ -9,6 +9,8 @@ export default defineConfig({
   reporter: 'html',
   use: {
     baseURL: 'https://www.saucedemo.com',
+    // SauceDemo marks elements with data-test, not Playwright's default data-testid.
+    testIdAttribute: 'data-test',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
   },

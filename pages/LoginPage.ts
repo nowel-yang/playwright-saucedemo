@@ -9,10 +9,10 @@ export class LoginPage {
 
   constructor(page: Page) {
     this.page = page;
-    this.usernameInput = page.locator("#user-name");
-    this.passwordInput = page.locator("#password");
-    this.loginButton = page.locator("#login-button");
-    this.errorMessage = page.locator('[data-test="error"]');
+    this.usernameInput = page.getByPlaceholder("Username");
+    this.passwordInput = page.getByPlaceholder("Password");
+    this.loginButton = page.getByRole("button", { name: "Login", exact: true });
+    this.errorMessage = page.getByTestId("error");
   }
 
   async login(username: string, password: string) {

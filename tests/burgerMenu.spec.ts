@@ -5,7 +5,9 @@ test.describe("Burger Menu", () => {
     test.beforeEach(async ({ authenticatedInventoryPage: inventoryPage }) => {
       // Open the burger menu
       await inventoryPage.burgerMenuButton.open();
-      await expect(inventoryPage.burgerMenuButton.menuNavigation).toBeVisible();
+      await expect(
+        inventoryPage.burgerMenuButton.menuNavigation
+      ).toBeInViewport({ ratio: 1 });
     });
 
     test(

@@ -2,8 +2,9 @@ import { Page, Locator } from "@playwright/test";
 
 export class BurgerMenu {
   readonly page: Page;
+  readonly openMenuButton: Locator;
+  readonly closeMenuButton: Locator;
   readonly menuNavigation: Locator;
-  readonly menuItems: Locator;
   readonly logoutLink: Locator;
   readonly resetAppStateLink: Locator;
   readonly lazyLoadLink: Locator;
@@ -12,22 +13,25 @@ export class BurgerMenu {
 
   constructor(page: Page) {
     this.page = page;
-    this.menuNavigation = page.locator("#menu_button_container nav");
+    this.openMenuButton = page.getByRole("button", { name: "Open Menu" });
+    this.closeMenuButton = page.getByRole("button", { name: "Close Menu" });
     this.dynamicCatalogLink = page.locator("#dynamic_catalog_sidebar_link");
-    this.menuItems = page.locator(".bm-item-list a");
-    this.logoutLink = page.locator("#logout_sidebar_link");
-    this.resetAppStateLink = page.locator("#reset_sidebar_link");
-    this.lazyLoadLink = page.locator("#dynamic_catalog_lazy_load_link");
-    this.spinnerLink = page.locator("#dynamic_catalog_spinner_link");
+    this.logoutLink = page.getByTestId("logout-sidebar-link");
+    this.resetAppStateLink = page.getByTestId("reset-sidebar-link");
+    this.lazyLoadLink = page.getByTestId("dynamic-catalog-lazy-load-link");
+    this.spinnerLink = page.getByTestId("dynamic-catalog-spinner-link");
+    this.menuNavigation = page
+      .getByRole("navigation")
+      .filter({ has: this.logoutLink });
   }
 
   async open() {
-    await this.page.locator("#react-burger-menu-btn").click();
+    await this.openMenuButton.click();
     await this.menuNavigation.waitFor({ state: "visible" });
   }
 
   async close() {
-    await this.page.locator("#react-burger-cross-btn").click();
+    await this.closeMenuButton.click();
     await this.menuNavigation.waitFor({ state: "hidden" });
   }
 

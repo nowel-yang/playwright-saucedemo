@@ -18,22 +18,24 @@ export class InventoryPage {
   constructor(page: Page) {
     this.page = page;
     this.burgerMenuButton = new BurgerMenu(page);
-    this.cartLink = page.locator(".shopping_cart_link");
-    this.cartBadge = page.locator(".shopping_cart_badge");
-    this.inventoryList = page.locator(".inventory_list");
-    this.inventoryItem = page.locator(".inventory_item");
-    this.inventoryItemImages = page.locator(".inventory_item_img");
-    this.inventoryItemNames = page.locator(".inventory_item_name");
-    this.sortDropdown = page.locator('[data-test="product-sort-container"]');
-    this.activeOption = page.locator('[data-test="active-option"]');
+    this.cartLink = page.getByTestId("shopping-cart-link");
+    this.cartBadge = page.getByTestId("shopping-cart-badge");
+    this.inventoryList = page.getByTestId("inventory-list");
+    this.inventoryItem = page.getByTestId("inventory-item");
+    this.inventoryItemImages = this.inventoryList.getByRole("img");
+    this.inventoryItemNames = page.getByTestId("inventory-item-name");
+    this.sortDropdown = page.getByTestId("product-sort-container");
+    this.activeOption = page.getByTestId("active-option");
   }
 
   async getItemCount(): Promise<number> {
-    return this.inventoryList.locator(".inventory_item").count();
+    return this.inventoryItem.count();
   }
 
   async addItemToCart(itemName: string) {
-    await this.getInventoryItemByName(itemName).locator("button").click();
+    await this.getInventoryItemByName(itemName)
+      .getByRole("button", { name: "Add to cart", exact: true })
+      .click();
   }
 
   async sortBy(option: SortOption) {
@@ -42,14 +44,14 @@ export class InventoryPage {
 
   async getItemPrices(): Promise<number[]> {
     const priceStrings = await this.inventoryList
-      .locator('[data-test="inventory-item-price"]')
+      .getByTestId("inventory-item-price")
       .allTextContents();
     return priceStrings.map((price) => parseFloat(price.replace("$", "")));
   }
 
   async getItemNames(): Promise<string[]> {
     return this.inventoryList
-      .locator('[data-test="inventory-item-name"]')
+      .getByTestId("inventory-item-name")
       .allTextContents();
   }
 

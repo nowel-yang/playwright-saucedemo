@@ -1,5 +1,5 @@
 import { Page, Locator } from "@playwright/test";
-import { BurgerMenu } from "./BurgerMenu";
+import { BurgerMenu } from "./components/BurgerMenu";
 
 export type SortOption = "az" | "za" | "lohi" | "hilo";
 

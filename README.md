@@ -98,7 +98,8 @@ playwright-saucedemo/
 ├── fixtures/
 │   └── index.ts              # logged-in page fixtures
 ├── pages/                    # page objects
-│   ├── BurgerMenu.ts
+│   ├── components/           # parts shared across pages
+│   │   └── BurgerMenu.ts
 │   ├── InventoryPage.ts
 │   └── LoginPage.ts
 ├── test-data/

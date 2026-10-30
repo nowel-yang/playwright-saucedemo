@@ -1,6 +1,7 @@
 # playwright-saucedemo
 
 [![Playwright Tests](https://github.com/nowel-yang/playwright-saucedemo/actions/workflows/playwright.yml/badge.svg)](https://github.com/nowel-yang/playwright-saucedemo/actions/workflows/playwright.yml)
+[![Test Report](https://img.shields.io/badge/test%20report-live-2ea44f)](https://nowel-yang.github.io/playwright-saucedemo/)
 
 End-to-end tests for [SauceDemo](https://www.saucedemo.com), a demo online shop,
 written with Playwright and TypeScript. They run in Chromium, Firefox and WebKit.
@@ -28,10 +29,11 @@ The [docs README](docs/README.md) explains how the test docs are organized.
 
 ### Test report
 
-Every test is tagged with its test case ID, so the HTML report maps straight back to
-the docs. (Chromium run shown; the suite also runs in Firefox and WebKit.)
+The [latest HTML report](https://nowel-yang.github.io/playwright-saucedemo/) is published from CI on every push to
+`main`. Every test is tagged with its test case ID, so the report maps straight back to
+the docs. (Chromium run shown below; the suite also runs in Firefox and WebKit.)
 
-![Playwright HTML report showing all tests passing with their test case tags](docs/images/report.png)
+[![Playwright HTML report showing all tests passing with their test case tags](docs/images/report.png)](https://nowel-yang.github.io/playwright-saucedemo/)
 
 ## Practices
 

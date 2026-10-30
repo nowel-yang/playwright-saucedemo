@@ -26,3 +26,26 @@ jobs:
         name: playwright-report
         path: playwright-report/
         retention-days: 30
+    # Package the report for GitHub Pages (only for main, not PRs)
+    - uses: actions/upload-pages-artifact@v3
+      if: ${{ !cancelled() && github.event_name != 'pull_request' }}
+      with:
+        path: playwright-report/
+
+  # Publish the latest report to https://nowel-yang.github.io/playwright-saucedemo/
+  deploy-report:
+    needs: test
+    if: ${{ !cancelled() && github.event_name != 'pull_request' }}
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    concurrency:
+      group: pages
+      cancel-in-progress: true
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+    - id: deployment
+      uses: actions/deploy-pages@v4

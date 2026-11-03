@@ -11,6 +11,7 @@ const API = {
   ok: 'https://httpbin.org/get',
   slow: 'https://httpbin.org/delay/8', // longer than the 5s expect timeout
   error: 'https://httpbin.org/status/500',
+  unreachable: 'https://api.drill.invalid/order', // .invalid never resolves
 };
 
 const CHECKOUT_HTML = `
@@ -57,7 +58,7 @@ function captureErrors(page: Page, testInfo: TestInfo) {
   };
 }
 
-test.describe('API failure drill', () => {
+test.describe('API failure drill', { tag: '@API-DRILL' }, () => {
   let flushLogs: () => Promise<void>;
 
   test.beforeEach(async ({ page }, testInfo) => {
@@ -68,24 +69,30 @@ test.describe('API failure drill', () => {
     await flushLogs();
   });
 
-  test('passes: API responds 200, Finish becomes enabled', async ({ page }) => {
+  test('passes: API responds 200, Finish becomes enabled', { tag: '@API-DRILL-001' }, async ({ page }) => {
     await openCheckout(page, API.ok);
     await expect(page.getByRole('button', { name: 'Finish' })).toBeEnabled();
   });
 
   // Symptom-only assertion: report says "disabled" but not why.
-  test('fails: slow API leaves Finish disabled', async ({ page }) => {
+  test('fails: slow API leaves Finish disabled', { tag: '@API-DRILL-002' }, async ({ page }) => {
     await openCheckout(page, API.slow);
     await expect(page.getByRole('button', { name: 'Finish' })).toBeEnabled();
   });
 
-  test('fails: API 500 leaves Finish disabled', async ({ page }) => {
+  test('fails: API 500 leaves Finish disabled', { tag: '@API-DRILL-003' }, async ({ page }) => {
     await openCheckout(page, API.error);
     await expect(page.getByRole('button', { name: 'Finish' })).toBeEnabled();
   });
 
+  // No status code at all: the request never reaches a server, so requestfailed fires.
+  test('fails: API host unreachable, request never reaches a server', { tag: '@API-DRILL-004' }, async ({ page }) => {
+    await openCheckout(page, API.unreachable);
+    await expect(page.getByRole('button', { name: 'Finish' })).toBeEnabled();
+  });
+
   // Root-cause assertion: report names the failing endpoint and its status code.
-  test('fails: API 500, asserted on the response itself', async ({ page }) => {
+  test('fails: API 500, asserted on the response itself', { tag: '@API-DRILL-005' }, async ({ page }) => {
     const responsePromise = page.waitForResponse(API.error);
     await openCheckout(page, API.error);
     const res = await responsePromise;

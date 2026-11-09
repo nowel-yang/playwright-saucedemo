@@ -1,6 +1,10 @@
 import { test, expect } from "../fixtures";
 import { INVALID_PASSWORD, PASSWORD, usernames } from "../test-data/users";
 
+// Login tests must start LOGGED OUT, so override the saved session
+// from the config with an empty one for this whole file.
+test.use({ storageState: { cookies: [], origins: [] } });
+
 test.describe("Login", () => {
   test(
     "logs in successfully with standard user",

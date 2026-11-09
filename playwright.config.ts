@@ -17,17 +17,29 @@ export default defineConfig({
     screenshot: 'only-on-failure',
   },
   projects: [
+    // 1) Runs first. Only picks up *.setup.ts files (tests/auth.setup.ts),
+    //    which logs in through the UI and saves the session to a JSON file.
+    {
+      name: 'setup',
+      testMatch: /.*\.setup\.ts/,
+    },
+    // 2) The browser projects wait for "setup" (dependencies), then every
+    //    new browser context starts with the saved cookies + localStorage
+    //    (storageState), so tests begin already logged in.
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      use: { ...devices['Desktop Chrome'], storageState: 'playwright/.auth/standard_user.json' },
+      dependencies: ['setup'],
     },
     {
       name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
+      use: { ...devices['Desktop Firefox'], storageState: 'playwright/.auth/standard_user.json' },
+      dependencies: ['setup'],
     },
     {
       name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
+      use: { ...devices['Desktop Safari'], storageState: 'playwright/.auth/standard_user.json' },
+      dependencies: ['setup'],
     },
   ],
 });

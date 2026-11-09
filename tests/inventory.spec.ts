@@ -108,15 +108,21 @@ test.describe("Inventory", () => {
     }
   );
 
-  test(
-    "shows broken images with problem user",
-    { tag: "@INV-050" },
-    async ({ loginPage, inventoryPage }) => {
-      await loginPage.login(usernames.problem_user, PASSWORD);
-      await expect(loginPage.page).toHaveURL(/inventory/);
-      await expect
-        .poll(() => inventoryPage.getBrokenImages())
-        .not.toHaveLength(0);
-    }
-  );
+  // This test logs in as a different user (problem_user), so it must not
+  // start with the saved standard_user session.
+  test.describe("as problem_user", () => {
+    test.use({ storageState: { cookies: [], origins: [] } });
+
+    test(
+      "shows broken images with problem user",
+      { tag: "@INV-050" },
+      async ({ loginPage, inventoryPage }) => {
+        await loginPage.login(usernames.problem_user, PASSWORD);
+        await expect(loginPage.page).toHaveURL(/inventory/);
+        await expect
+          .poll(() => inventoryPage.getBrokenImages())
+          .not.toHaveLength(0);
+      }
+    );
+  });
 });

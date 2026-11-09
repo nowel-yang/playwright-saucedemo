@@ -30,10 +30,10 @@ verify how the site behaves for each of its test users.
 | -------------- | -------------------------------------------------------------------------------------- |
 | Framework      | Playwright Test with TypeScript                                                        |
 | Design pattern | Page Object Model, one class per page or component in `pages/`                         |
-| Login          | Fixtures in `fixtures/index.ts`; `authenticatedInventoryPage` logs in through the UI before each test |
+| Login          | The `setup` project (`tests/auth.setup.ts`) logs in through the UI once per run and saves the session; browser projects load it with `storageState`, and `authenticatedInventoryPage` opens the inventory page directly |
 | Test data      | `test-data/users.ts` for credentials, `test-data/items.ts` for product names and IDs   |
 | App state      | Cart state is set up and checked directly in `localStorage` (`cart-contents`)          |
-| Isolation      | Each test gets a fresh browser context, so no login or cart state is shared            |
+| Isolation      | Each test gets a fresh browser context, so cart state is not shared. The saved `standard_user` session is shared on purpose; login tests and tests for other users override it with an empty `storageState` |
 | Assertions     | Web-first assertions (`expect(locator).toHave*`), no fixed waits                        |
 | Traceability   | Each case has an ID that is used as a tag on its test (see [README](README.md))         |
 
@@ -80,7 +80,7 @@ product bug.
 
 | Risk                                                   | Mitigation                                                          |
 | ------------------------------------------------------ | ------------------------------------------------------------------- |
-| The `session-username` login cookie expires after about 10 minutes | Log in per test through a fixture; don't reuse an old `storageState` |
+| The `session-username` login cookie expires after about 10 minutes | The `setup` project logs in again at the start of every run, so normal runs get a fresh session. With `--no-deps` or a long UI mode session, rerun `setup` first |
 | Cart state in `localStorage` leaks between steps       | Clear or set `cart-contents` at the start of each cart test         |
 | The third-party demo site changes selectors or data    | Prefer `data-test` selectors; keep product data in `test-data/`     |
 | Flaky timing, especially with `performance_glitch_user` | Web-first assertions only; retries are kept to CI                  |

@@ -48,10 +48,14 @@ the docs. (Chromium run shown below; the suite also runs in Firefox and WebKit.)
   investigated.
 - **Isolated tests.** Each test gets a fresh browser context, and cart state is set
   up directly in `localStorage` so a test only fails for what it is testing.
+- **Log in once per run.** A setup project (`tests/auth.setup.ts`) logs in as
+  `standard_user` and saves the session, and the browser projects start from it
+  with `storageState`. Login tests and tests for other users start logged out.
 - **Page objects come from fixtures.** Every page object has a fixture in
   `fixtures/index.ts`, so tests ask for `{ inventoryPage }` instead of calling
   `new InventoryPage(page)`. Plain fixtures only create the object. Fixtures such
-  as `authenticatedInventoryPage` add setup on top, like logging in.
+  as `authenticatedInventoryPage` add setup on top, like opening the inventory
+  page with the saved session.
 
 ## Getting started
 
@@ -108,6 +112,7 @@ playwright-saucedemo/
 │   ├── items.ts              # product names and IDs
 │   └── users.ts              # SauceDemo users and passwords
 ├── tests/
+│   ├── auth.setup.ts         # logs in once and saves the session
 │   ├── auth.spec.ts
 │   ├── burgerMenu.spec.ts
 │   └── inventory.spec.ts

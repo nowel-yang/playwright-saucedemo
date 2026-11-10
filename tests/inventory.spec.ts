@@ -67,13 +67,12 @@ test.describe("Inventory", () => {
     "add item to cart",
     { tag: "@INV-030" },
     async ({ authenticatedInventoryPage }) => {
+      const { backpack } = items;
       await authenticatedInventoryPage.clearCartStorage();
-      await authenticatedInventoryPage.addItemToCart(items.backpack.name);
+      await authenticatedInventoryPage.addItemToCart(backpack.name);
       await expect(authenticatedInventoryPage.cartBadge).toHaveText("1");
       await expect(
-        authenticatedInventoryPage
-          .getInventoryItemByName(items.backpack.name)
-          .locator("button")
+        authenticatedInventoryPage.getCartButton(backpack.name)
       ).toHaveText("Remove");
     }
   );
@@ -82,25 +81,15 @@ test.describe("Inventory", () => {
     "remove item from cart",
     { tag: "@INV-031" },
     async ({ authenticatedInventoryPage }) => {
-      await authenticatedInventoryPage.setCartStorage([items.backpack.id]);
+      const { backpack } = items;
+      await authenticatedInventoryPage.setCartStorage([backpack.id]);
       await authenticatedInventoryPage.page.reload();
-      // Verify "Remove" button
-      await expect(
-        authenticatedInventoryPage
-          .getInventoryItemByName(items.backpack.name)
-          .locator("button")
-      ).toHaveText("Remove");
-      // Click "Remove" button
-      await authenticatedInventoryPage
-        .getInventoryItemByName(items.backpack.name)
-        .locator("button")
-        .click();
-      // Verify "Add to cart" button
-      await expect(
-        authenticatedInventoryPage
-          .getInventoryItemByName(items.backpack.name)
-          .locator("button")
-      ).toHaveText("Add to cart");
+      const cartButton = authenticatedInventoryPage.getCartButton(
+        backpack.name
+      );
+      await expect(cartButton).toHaveText("Remove");
+      await cartButton.click();
+      await expect(cartButton).toHaveText("Add to cart");
       await expect(authenticatedInventoryPage.cartBadge).toHaveCount(0);
       await expect
         .poll(() => authenticatedInventoryPage.getCartStorage())

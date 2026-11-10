@@ -55,6 +55,16 @@ export class InventoryPage {
       .allTextContents();
   }
 
+  // The item's add/remove button. Its label toggles between "Add to cart"
+  // and "Remove", so match either one; tests assert which one is shown.
+  // A plain getByRole("button") isn't enough: the item's image and title
+  // links also have role="button".
+  getCartButton(itemName: string): Locator {
+    return this.getInventoryItemByName(itemName).getByRole("button", {
+      name: /^(Add to cart|Remove)$/,
+    });
+  }
+
   getInventoryItemByName(itemName: string): Locator {
     return this.inventoryItem.filter({
       has: this.inventoryItemNames.filter({ hasText: itemName }),

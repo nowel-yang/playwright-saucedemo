@@ -15,7 +15,7 @@ export class BurgerMenu {
     this.page = page;
     this.openMenuButton = page.getByRole("button", { name: "Open Menu" });
     this.closeMenuButton = page.getByRole("button", { name: "Close Menu" });
-    this.dynamicCatalogLink = page.locator("#dynamic_catalog_sidebar_link");
+    this.dynamicCatalogLink = page.getByTestId("dynamic-catalog-sidebar-link");
     this.logoutLink = page.getByTestId("logout-sidebar-link");
     this.resetAppStateLink = page.getByTestId("reset-sidebar-link");
     this.lazyLoadLink = page.getByTestId("dynamic-catalog-lazy-load-link");
